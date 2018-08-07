@@ -4,9 +4,7 @@
     logger "Mounting \"$1\"";
     resmnt=$(udisksctl mount -b "/dev/$1");
 
-    if [[ $resmnt =~ "^Error mounting.*" ]]; then
-        exit 1;
-    elif [[ $resmnt == Mounted* ]]; then
+    if [[ $resmnt == Mounted* ]]; then
         mnt=${resmnt##Mounted * at };
         mnt=${mnt%%\.};
     else
