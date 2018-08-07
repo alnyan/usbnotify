@@ -1,0 +1,10 @@
+#!/bin/bash
+
+[[ $1 =~ ^sd[a-z][0-9]+$ ]] && {
+    if [[ -e ~/.local/share/usbnotify/mtab-$1 ]]; then
+        guid=$(cat ~/.local/share/usbnotify/mtab-$1);
+        rm -f ~/.local/share/usbnotify/mount/${guid};
+    fi;
+    rm -f ~/.local/share/usbnotify/mtab-$1;
+    notify-send "/dev/$1 disconnected";
+}

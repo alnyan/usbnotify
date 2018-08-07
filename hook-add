@@ -1,0 +1,25 @@
+#!/bin/bash
+
+[[ $1 =~ ^sd[a-z][0-9]+$ ]] && {
+    logger "Mounting \"$1\"";
+    resmnt=$(udisksctl mount -b "/dev/$1");
+
+    if [[ $resmnt =~ "^Error mounting.*" ]]; then
+        exit 1;
+    elif [[ $resmnt == Mounted* ]]; then
+        mnt=${resmnt##Mounted * at };
+        mnt=${mnt%%\.};
+    else
+        exit 1;
+    fi
+
+    if [[ ! -z ${mnt} ]]; then
+        mkdir -p ~/.local/share/usbnotify/mount;
+        guid=$(basename ${mnt});
+        rm -f ~/.local/share/usbnotify/mount/${guid};
+        ln -s ${mnt} ~/.local/share/usbnotify/mount/${guid};
+        echo ${guid} > ~/.local/share/usbnotify/mtab-$1;
+
+        notify-send -t 1000 "/dev/$1 connected" "Mounted at ~/.local/share/usbnotify/${guid}";
+    fi
+}
